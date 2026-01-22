@@ -630,6 +630,55 @@ body::before {
     font-weight: 600;
 }
 
+/* Mobile Day Navigation */
+.mobile-day-navigation {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(255, 105, 180, 0.2);
+}
+
+.day-nav-dot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.8);
+    border: 2px solid var(--primary-pink);
+    border-radius: 12px;
+    padding: 0.5rem 0.75rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 45px;
+}
+
+.day-nav-dot.active {
+    background: linear-gradient(135deg, var(--hot-pink), var(--primary-pink));
+    border-color: var(--hot-pink);
+    transform: scale(1.1);
+    box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
+}
+
+.day-nav-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--deep-pink);
+}
+
+.day-nav-dot.active .day-nav-label {
+    color: white;
+}
+
+.day-nav-dot:hover:not(.active) {
+    transform: scale(1.05);
+    background: rgba(255, 182, 217, 0.3);
+    border-color: var(--hot-pink);
+}
+
 /* Responsive Design */
 @media (max-width: 1200px) {
     .planner-grid {
@@ -642,6 +691,10 @@ body::before {
 }
 
 @media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+
     .title {
         font-size: 2rem;
     }
@@ -651,16 +704,68 @@ body::before {
         gap: 1rem;
     }
 
+    .week-dropdown {
+        min-width: 280px;
+        padding: 0.6rem 1.5rem;
+        font-size: 0.9rem;
+    }
+
     .current-week {
         min-width: auto;
     }
 
+    .planner-grid {
+        grid-template-columns: 70px 1fr;
+        padding: 1rem;
+    }
+
     .days-container {
-        grid-template-columns: repeat(7, minmax(100px, 1fr));
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .day-column {
+        min-width: 100%;
+        width: 100%;
+    }
+
+    .time-slot {
+        font-size: 0.75rem;
+        height: 60px;
+    }
+
+    .day-header {
+        font-size: 1.2rem;
+    }
+
+    .day-name {
+        font-size: 1.1rem;
+    }
+
+    .day-date {
+        font-size: 0.9rem;
     }
 
     .modal-content {
         width: 95%;
         padding: 1.5rem;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .mobile-day-navigation {
+        gap: 0.4rem;
+        padding: 0.75rem;
+    }
+
+    .day-nav-dot {
+        min-width: 40px;
+        padding: 0.4rem 0.6rem;
+    }
+
+    .day-nav-label {
+        font-size: 0.7rem;
     }
 }
