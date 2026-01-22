@@ -5,14 +5,15 @@
 }
 
 :root {
-    --primary-pink: #ff6ec7;
-    --primary-purple: #7b2cbf;
-    --dark-purple: #240046;
-    --light-pink: #ffb3e6;
-    --accent-purple: #9d4edd;
-    --bg-dark: #0d0221;
-    --glass-bg: rgba(123, 44, 191, 0.1);
-    --glass-border: rgba(255, 110, 199, 0.2);
+    --primary-pink: #ff69b4;
+    --hot-pink: #ff1493;
+    --light-pink: #ffb6d9;
+    --pale-pink: #ffc9e0;
+    --deep-pink: #c71585;
+    --dark-pink: #8b0a50;
+    --bg-light-pink: #fff0f5;
+    --glass-bg: rgba(255, 105, 180, 0.1);
+    --glass-border: rgba(255, 20, 147, 0.2);
     --white: #ffffff;
     --light-gray: #f5f5f5;
     --border-gray: #e0e0e0;
@@ -25,8 +26,8 @@
 }
 
 @keyframes glow-pulse {
-    0%, 100% { box-shadow: 0 0 20px rgba(255, 110, 199, 0.3); }
-    50% { box-shadow: 0 0 40px rgba(255, 110, 199, 0.6), 0 0 60px rgba(123, 44, 191, 0.4); }
+    0%, 100% { box-shadow: 0 0 20px rgba(255, 105, 180, 0.3); }
+    50% { box-shadow: 0 0 40px rgba(255, 105, 180, 0.6), 0 0 60px rgba(255, 20, 147, 0.4); }
 }
 
 @keyframes float {
@@ -58,7 +59,7 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #f0e6f6 0%, var(--light-pink) 25%, var(--dark-purple) 50%, var(--bg-dark) 75%, var(--dark-purple) 100%);
+    background: linear-gradient(135deg, var(--bg-light-pink) 0%, var(--pale-pink) 25%, var(--primary-pink) 50%, var(--hot-pink) 75%, var(--deep-pink) 100%);
     background-size: 200% 200%;
     animation: gradient-shift 15s ease infinite;
     color: #333;
@@ -74,8 +75,8 @@ body::before {
     width: 100%;
     height: 100%;
     background-image:
-        radial-gradient(circle at 20% 30%, rgba(255, 110, 199, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 80% 70%, rgba(123, 44, 191, 0.1) 0%, transparent 50%);
+        radial-gradient(circle at 20% 30%, rgba(255, 105, 180, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(255, 20, 147, 0.15) 0%, transparent 50%);
     pointer-events: none;
     z-index: 0;
 }
@@ -97,7 +98,7 @@ body::before {
 .title {
     font-size: 3rem;
     font-weight: 700;
-    background: linear-gradient(90deg, var(--primary-pink), var(--primary-purple), var(--primary-pink));
+    background: linear-gradient(90deg, var(--hot-pink), var(--primary-pink), var(--pale-pink), var(--primary-pink), var(--hot-pink));
     background-size: 200% auto;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -117,8 +118,8 @@ body::before {
 
 .week-dropdown {
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.85));
-    border: 2px solid var(--primary-purple);
-    color: var(--dark-purple);
+    border: 2px solid var(--hot-pink);
+    color: var(--deep-pink);
     padding: 0.75rem 2rem;
     border-radius: 50px;
     cursor: pointer;
@@ -127,19 +128,19 @@ body::before {
     transition: all 0.3s ease;
     min-width: 350px;
     text-align: center;
-    box-shadow: 0 4px 15px rgba(123, 44, 191, 0.3);
+    box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
 }
 
 .week-dropdown:hover {
     transform: scale(1.02);
-    box-shadow: 0 6px 25px rgba(255, 110, 199, 0.5);
+    box-shadow: 0 6px 25px rgba(255, 105, 180, 0.5);
     border-color: var(--primary-pink);
 }
 
 .week-dropdown:focus {
     outline: none;
-    border-color: var(--primary-pink);
-    box-shadow: 0 0 20px rgba(255, 110, 199, 0.4);
+    border-color: var(--hot-pink);
+    box-shadow: 0 0 20px rgba(255, 105, 180, 0.4);
 }
 
 .quick-add-section {
@@ -150,7 +151,7 @@ body::before {
 }
 
 .quick-add-btn {
-    background: linear-gradient(135deg, var(--primary-purple), var(--primary-pink));
+    background: linear-gradient(135deg, var(--hot-pink), var(--primary-pink));
     border: 2px solid var(--glass-border);
     color: white;
     padding: 1rem 3rem;
@@ -164,7 +165,7 @@ body::before {
 
 .quick-add-btn:hover {
     transform: scale(1.1);
-    background: linear-gradient(135deg, var(--primary-pink), var(--accent-purple));
+    background: linear-gradient(135deg, var(--primary-pink), var(--deep-pink));
 }
 
 .planner-grid {
@@ -173,11 +174,11 @@ body::before {
     gap: 1rem;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
-    border: 2px solid var(--primary-purple);
+    border: 2px solid var(--hot-pink);
     border-radius: 20px;
     padding: 1.5rem;
     animation: slideIn 0.8s ease-out;
-    box-shadow: 0 10px 40px rgba(123, 44, 191, 0.2);
+    box-shadow: 0 10px 40px rgba(255, 105, 180, 0.2);
 }
 
 .time-column {
@@ -193,9 +194,10 @@ body::before {
     justify-content: center;
     font-weight: 700;
     font-size: 1.1rem;
-    background: linear-gradient(135deg, var(--primary-pink), var(--primary-purple));
+    background: linear-gradient(135deg, var(--primary-pink), var(--hot-pink));
     border-radius: 10px;
     margin-bottom: 0.5rem;
+    color: white;
 }
 
 .time-slots {
@@ -210,7 +212,7 @@ body::before {
     align-items: flex-start;
     justify-content: center;
     font-size: 0.85rem;
-    color: var(--dark-purple);
+    color: var(--deep-pink);
     background: transparent;
     padding-top: 4px;
     font-weight: 500;
@@ -244,18 +246,18 @@ body::before {
     align-items: center;
     justify-content: center;
     font-weight: 700;
-    background: linear-gradient(135deg, var(--accent-purple), var(--primary-pink));
+    background: linear-gradient(135deg, var(--deep-pink), var(--primary-pink));
     border-radius: 10px;
     margin-bottom: 0.5rem;
     cursor: pointer;
     transition: all 0.3s ease;
     color: white;
-    box-shadow: 0 2px 10px rgba(123, 44, 191, 0.3);
+    box-shadow: 0 2px 10px rgba(255, 105, 180, 0.3);
 }
 
 .day-header:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(255, 110, 199, 0.4);
+    box-shadow: 0 10px 30px rgba(255, 105, 180, 0.4);
 }
 
 .day-name {
@@ -281,7 +283,7 @@ body::before {
 }
 
 .hour-container:hover {
-    background: rgba(255, 110, 199, 0.05);
+    background: rgba(255, 105, 180, 0.05);
 }
 
 .interval-line {
@@ -291,6 +293,7 @@ body::before {
     height: 1px;
     background: var(--border-gray);
     pointer-events: none;
+    z-index: 1;
 }
 
 .interval-line:nth-child(2) { top: 0; }      /* 0 minutes - hour line */
@@ -299,7 +302,7 @@ body::before {
 .interval-line:nth-child(5) { top: 45px; }   /* 45 minutes */
 
 .interval-line.hour-line {
-    background: rgba(123, 44, 191, 0.3);
+    background: rgba(255, 105, 180, 0.3);
     height: 2px;
 }
 
@@ -307,8 +310,8 @@ body::before {
     position: absolute;
     left: 0;
     right: 0;
-    background: rgba(123, 44, 191, 0.1);
-    border: 1px solid rgba(255, 110, 199, 0.15);
+    background: rgba(255, 105, 180, 0.1);
+    border: 1px solid rgba(255, 20, 147, 0.15);
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -317,25 +320,27 @@ body::before {
 }
 
 .time-block:not(.event):hover {
-    background: rgba(255, 110, 199, 0.15);
-    border-color: var(--primary-pink);
+    background: rgba(255, 105, 180, 0.15);
+    border-color: var(--hot-pink);
     transform: scale(1.02);
 }
 
 .event {
-    background: linear-gradient(135deg, var(--primary-pink), var(--accent-purple));
-    border: 2px solid var(--light-pink);
+    background: linear-gradient(135deg, var(--primary-pink), var(--hot-pink));
+    border: 2px solid var(--pale-pink);
     padding: 0.5rem;
     height: auto;
     min-height: 60px;
     cursor: pointer;
     transition: all 0.3s ease;
     animation: slideIn 0.3s ease-out;
+    z-index: 5;
+    position: relative;
 }
 
 .event:hover {
     transform: scale(1.05);
-    box-shadow: 0 5px 20px rgba(255, 110, 199, 0.6);
+    box-shadow: 0 5px 20px rgba(255, 105, 180, 0.6);
     z-index: 10;
 }
 
@@ -371,7 +376,7 @@ body::before {
     top: 0;
     width: 100%;
     height: 100%;
-    background: rgba(13, 2, 33, 0.9);
+    background: rgba(139, 10, 80, 0.9);
     backdrop-filter: blur(5px);
     animation: fadeIn 0.3s ease;
 }
@@ -388,15 +393,15 @@ body::before {
 }
 
 .modal-content {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(245, 235, 255, 0.98));
-    border: 3px solid var(--primary-purple);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(255, 240, 245, 0.98));
+    border: 3px solid var(--hot-pink);
     border-radius: 20px;
     padding: 2rem;
     width: 90%;
     max-width: 500px;
     animation: slideIn 0.3s ease-out;
     backdrop-filter: blur(10px);
-    box-shadow: 0 20px 60px rgba(123, 44, 191, 0.4);
+    box-shadow: 0 20px 60px rgba(255, 105, 180, 0.4);
 }
 
 .modal-header {
@@ -407,14 +412,14 @@ body::before {
 }
 
 .modal-header h2 {
-    color: var(--primary-pink);
+    color: var(--hot-pink);
     font-size: 1.8rem;
 }
 
 .close-btn {
     background: none;
     border: none;
-    color: var(--primary-purple);
+    color: var(--hot-pink);
     font-size: 2rem;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -427,7 +432,7 @@ body::before {
 }
 
 .close-btn:hover {
-    background: rgba(123, 44, 191, 0.2);
+    background: rgba(255, 105, 180, 0.2);
     transform: rotate(90deg);
 }
 
@@ -444,7 +449,7 @@ body::before {
 .form-group label {
     display: block;
     margin-bottom: 0.5rem;
-    color: var(--dark-purple);
+    color: var(--deep-pink);
     font-weight: 600;
 }
 
@@ -454,9 +459,9 @@ body::before {
     width: 100%;
     padding: 0.75rem;
     background: rgba(255, 255, 255, 0.9);
-    border: 2px solid var(--primary-purple);
+    border: 2px solid var(--primary-pink);
     border-radius: 10px;
-    color: var(--dark-purple);
+    color: var(--deep-pink);
     font-size: 1rem;
     transition: all 0.3s ease;
 }
@@ -465,8 +470,8 @@ body::before {
 .form-group select:focus,
 .form-group textarea:focus {
     outline: none;
-    border-color: var(--primary-pink);
-    box-shadow: 0 0 20px rgba(255, 110, 199, 0.3);
+    border-color: var(--hot-pink);
+    box-shadow: 0 0 20px rgba(255, 105, 180, 0.3);
 }
 
 .form-group textarea {
@@ -499,24 +504,24 @@ body::before {
 }
 
 .save-btn {
-    background: linear-gradient(135deg, var(--primary-pink), var(--accent-purple));
+    background: linear-gradient(135deg, var(--hot-pink), var(--primary-pink));
     color: white;
 }
 
 .save-btn:hover {
     transform: scale(1.05);
-    box-shadow: 0 5px 20px rgba(255, 110, 199, 0.5);
+    box-shadow: 0 5px 20px rgba(255, 105, 180, 0.5);
 }
 
 .cancel-btn {
     background: rgba(255, 255, 255, 0.5);
-    color: var(--dark-purple);
-    border: 2px solid var(--primary-purple);
+    color: var(--deep-pink);
+    border: 2px solid var(--primary-pink);
 }
 
 .cancel-btn:hover {
     background: rgba(255, 255, 255, 0.8);
-    box-shadow: 0 2px 10px rgba(123, 44, 191, 0.3);
+    box-shadow: 0 2px 10px rgba(255, 105, 180, 0.3);
 }
 
 .delete-btn {
@@ -540,28 +545,28 @@ body::before {
     align-items: center;
     justify-content: center;
     z-index: 2000;
-    background: linear-gradient(135deg, #f0e6f6 0%, var(--light-pink) 25%, var(--dark-purple) 50%, var(--bg-dark) 75%, var(--dark-purple) 100%);
+    background: linear-gradient(135deg, var(--bg-light-pink) 0%, var(--pale-pink) 25%, var(--primary-pink) 50%, var(--hot-pink) 75%, var(--deep-pink) 100%);
     background-size: 200% 200%;
     animation: gradient-shift 15s ease infinite;
 }
 
 .password-content {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(245, 235, 255, 0.98));
-    border: 3px solid var(--primary-purple);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(255, 240, 245, 0.98));
+    border: 3px solid var(--hot-pink);
     border-radius: 20px;
     padding: 3rem;
     width: 90%;
     max-width: 450px;
     text-align: center;
     backdrop-filter: blur(10px);
-    box-shadow: 0 20px 60px rgba(123, 44, 191, 0.5);
+    box-shadow: 0 20px 60px rgba(255, 105, 180, 0.5);
     animation: slideIn 0.6s ease-out;
 }
 
 .password-title {
     font-size: 2.5rem;
     font-weight: 700;
-    background: linear-gradient(90deg, var(--primary-pink), var(--primary-purple), var(--primary-pink));
+    background: linear-gradient(90deg, var(--hot-pink), var(--primary-pink), var(--pale-pink), var(--primary-pink), var(--hot-pink));
     background-size: 200% auto;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -571,7 +576,7 @@ body::before {
 }
 
 .password-subtitle {
-    color: var(--dark-purple);
+    color: var(--deep-pink);
     font-size: 1.1rem;
     margin-bottom: 2rem;
     font-weight: 500;
@@ -587,9 +592,9 @@ body::before {
     width: 100%;
     padding: 1rem;
     background: rgba(255, 255, 255, 0.9);
-    border: 2px solid var(--primary-purple);
+    border: 2px solid var(--primary-pink);
     border-radius: 10px;
-    color: var(--dark-purple);
+    color: var(--deep-pink);
     font-size: 1.1rem;
     transition: all 0.3s ease;
     text-align: center;
@@ -597,12 +602,12 @@ body::before {
 
 #passwordInput:focus {
     outline: none;
-    border-color: var(--primary-pink);
-    box-shadow: 0 0 20px rgba(255, 110, 199, 0.3);
+    border-color: var(--hot-pink);
+    box-shadow: 0 0 20px rgba(255, 105, 180, 0.3);
 }
 
 .password-submit {
-    background: linear-gradient(135deg, var(--primary-pink), var(--accent-purple));
+    background: linear-gradient(135deg, var(--hot-pink), var(--primary-pink));
     border: none;
     color: white;
     padding: 1rem 2rem;
@@ -615,7 +620,7 @@ body::before {
 
 .password-submit:hover {
     transform: scale(1.05);
-    box-shadow: 0 5px 20px rgba(255, 110, 199, 0.5);
+    box-shadow: 0 5px 20px rgba(255, 105, 180, 0.5);
 }
 
 .password-error {

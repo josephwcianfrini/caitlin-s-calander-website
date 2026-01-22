@@ -390,7 +390,14 @@ class WeeklyPlanner {
         const description = document.getElementById('eventDescription').value;
         const day = parseInt(document.getElementById('eventDay').value);
         const startTime = document.getElementById('eventStartTime').value;
-        const endTime = document.getElementById('eventEndTime').value;
+        let endTime = document.getElementById('eventEndTime').value;
+
+        // If no end time provided, default to 1 hour after start time
+        if (!endTime) {
+            const [startHour, startMin] = startTime.split(':').map(Number);
+            const endHour = (startHour + 1) % 24;
+            endTime = `${endHour.toString().padStart(2, '0')}:${startMin.toString().padStart(2, '0')}`;
+        }
 
         // Calculate the date for the selected day
         const weekDates = this.getWeekDates();
