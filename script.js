@@ -7,7 +7,15 @@ class WeeklyPlanner {
         this.events = this.loadEvents();
         this.currentEditingEvent = null;
         this.hours = this.generateHours();
+        this.isMobile = this.detectMobile();
+        this.currentDayIndex = new Date().getDay(); // 0-6 for Sunday-Saturday
+        this.touchStartX = 0;
+        this.touchEndX = 0;
         this.init();
+    }
+
+    detectMobile() {
+        return window.innerWidth <= 768;
     }
 
     init() {
@@ -15,6 +23,58 @@ class WeeklyPlanner {
         this.populateWeekDropdown();
         this.renderWeek();
         this.attachEventListeners();
+        if (this.isMobile) {
+            this.attachSwipeListeners();
+        }
+        // Update on resize
+        window.addEventListener('resize', () => {
+            const wasMobile = this.isMobile;
+            this.isMobile = this.detectMobile();
+            if (wasMobile !== this.isMobile) {
+                this.renderWeek();
+            }
+        });
+    }
+
+    attachSwipeListeners() {
+        const daysContainer = document.getElementById('daysContainer');
+
+        daysContainer.addEventListener('touchstart', (e) => {
+            this.touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        daysContainer.addEventListener('touchend', (e) => {
+            this.touchEndX = e.changedTouches[0].screenX;
+            this.handleSwipe();
+        }, { passive: true });
+    }
+
+    handleSwipe() {
+        const swipeThreshold = 50;
+        const diff = this.touchStartX - this.touchEndX;
+
+        if (Math.abs(diff) > swipeThreshold) {
+            if (diff > 0) {
+                // Swipe left - next day
+                this.navigateDay(1);
+            } else {
+                // Swipe right - previous day
+                this.navigateDay(-1);
+            }
+        }
+    }
+
+    navigateDay(direction) {
+        this.currentDayIndex += direction;
+
+        // Wrap around within the week (0-6)
+        if (this.currentDayIndex > 6) {
+            this.currentDayIndex = 0;
+        } else if (this.currentDayIndex < 0) {
+            this.currentDayIndex = 6;
+        }
+
+        this.renderWeek();
     }
 
     generateHours() {
@@ -147,25 +207,70 @@ class WeeklyPlanner {
 
         // Render day columns
         const daysContainer = document.getElementById('daysContainer');
-        daysContainer.innerHTML = weekDates.map((date, index) => {
+
+        // On mobile, show only current day
+        const daysToRender = this.isMobile ? [this.currentDayIndex] : [0, 1, 2, 3, 4, 5, 6];
+
+        daysContainer.innerHTML = daysToRender.map((dayIndex) => {
+            const date = weekDates[dayIndex];
             const dateKey = this.formatDateKey(date);
             const dayEvents = this.events.filter(e => e.date === dateKey);
 
             return `
                 <div class="day-column">
-                    <div class="day-header" data-day="${index}" data-date="${dateKey}">
-                        <div class="day-name">${dayNames[index]}</div>
+                    <div class="day-header" data-day="${dayIndex}" data-date="${dateKey}">
+                        <div class="day-name">${dayNames[dayIndex]}</div>
                         <div class="day-date">${this.formatDate(date)}</div>
                     </div>
-                    <div class="day-slots" data-day="${index}" data-date="${dateKey}">
+                    <div class="day-slots" data-day="${dayIndex}" data-date="${dateKey}">
                         ${this.renderDaySlots(dateKey, dayEvents)}
                     </div>
                 </div>
             `;
         }).join('');
 
+        // Render mobile navigation if on mobile
+        if (this.isMobile) {
+            this.renderMobileNavigation(weekDates);
+            // Reattach swipe listeners after render
+            setTimeout(() => this.attachSwipeListeners(), 0);
+        }
+
         // Add click listeners to day headers and time blocks
         this.attachDayListeners();
+    }
+
+    renderMobileNavigation(weekDates) {
+        const daysContainer = document.getElementById('daysContainer');
+        const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+        // Remove old navigation if it exists
+        const oldNav = document.querySelector('.mobile-day-navigation');
+        if (oldNav) {
+            oldNav.remove();
+        }
+
+        // Create navigation dots/buttons
+        const navHTML = `
+            <div class="mobile-day-navigation">
+                ${dayNames.map((name, index) => `
+                    <button class="day-nav-dot ${index === this.currentDayIndex ? 'active' : ''}" data-day-index="${index}">
+                        <span class="day-nav-label">${name}</span>
+                    </button>
+                `).join('')}
+            </div>
+        `;
+
+        daysContainer.insertAdjacentHTML('beforebegin', navHTML);
+
+        // Add click listeners to navigation dots
+        document.querySelectorAll('.day-nav-dot').forEach(dot => {
+            dot.addEventListener('click', (e) => {
+                const dayIndex = parseInt(dot.dataset.dayIndex);
+                this.currentDayIndex = dayIndex;
+                this.renderWeek();
+            });
+        });
     }
 
     renderDaySlots(dateKey, dayEvents) {
