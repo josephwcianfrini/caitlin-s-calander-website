@@ -7,7 +7,20 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
+    <!-- Password Protection Screen -->
+    <div class="password-screen" id="passwordScreen">
+        <div class="password-content">
+            <h1 class="password-title">Caitlin's Weekly Calendar</h1>
+            <p class="password-subtitle">Please enter the password to continue</p>
+            <form id="passwordForm">
+                <input type="password" id="passwordInput" placeholder="Enter password..." autocomplete="off" required>
+                <button type="submit" class="password-submit">Enter</button>
+                <p class="password-error" id="passwordError"></p>
+            </form>
+        </div>
+    </div>
+
+    <div class="container" id="mainContainer" style="display: none;">
         <header class="header">
             <h1 class="title">Caitlin's Weekly Calendar</h1>
             <div class="week-navigation">
