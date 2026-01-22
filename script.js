@@ -1,6 +1,8 @@
 // Weekly Planner Application
 class WeeklyPlanner {
     constructor() {
+        this.minDate = new Date('2026-01-01');
+        this.maxDate = new Date('2026-12-13');
         this.currentWeekOffset = 0;
         this.events = this.loadEvents();
         this.currentEditingEvent = null;
@@ -29,25 +31,63 @@ class WeeklyPlanner {
         const dropdown = document.getElementById('weekDropdown');
         dropdown.innerHTML = '';
 
-        // Generate options for 26 weeks (past 13 weeks, current week, future 12 weeks)
-        for (let i = -13; i <= 12; i++) {
-            const tempOffset = i;
-            const tempDate = new Date();
-            const currentDay = tempDate.getDay();
-            const diff = tempDate.getDate() - currentDay + (tempOffset * 7);
-            const sunday = new Date(tempDate.setDate(diff));
-            const saturday = new Date(sunday);
-            saturday.setDate(sunday.getDate() + 6);
+        // Find the first Sunday on or after minDate
+        const firstSunday = new Date(this.minDate);
+        while (firstSunday.getDay() !== 0) {
+            firstSunday.setDate(firstSunday.getDate() + 1);
+        }
 
-            const weekDisplay = `${sunday.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${saturday.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
+        // Find the last Saturday on or before maxDate
+        const lastSaturday = new Date(this.maxDate);
+        while (lastSaturday.getDay() !== 6) {
+            lastSaturday.setDate(lastSaturday.getDate() - 1);
+        }
+
+        // Calculate the current week's Sunday
+        const today = new Date();
+        const currentSunday = new Date(today);
+        const currentDay = today.getDay();
+        currentSunday.setDate(today.getDate() - currentDay);
+
+        // Generate weeks from firstSunday to lastSaturday
+        let currentWeek = new Date(firstSunday);
+        let offsetValue = 0;
+        let foundCurrentWeek = false;
+
+        while (currentWeek <= lastSaturday) {
+            const weekStart = new Date(currentWeek);
+            const weekEnd = new Date(currentWeek);
+            weekEnd.setDate(weekStart.getDate() + 6);
+
+            // Check if this is the current week
+            const isCurrentWeek = weekStart.toDateString() === currentSunday.toDateString();
+            if (isCurrentWeek) {
+                this.currentWeekOffset = offsetValue;
+                foundCurrentWeek = true;
+            }
+
+            const weekDisplay = `${weekStart.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${weekEnd.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
 
             const option = document.createElement('option');
-            option.value = i;
+            option.value = offsetValue;
             option.textContent = weekDisplay;
-            if (i === this.currentWeekOffset) {
+            option.dataset.sunday = weekStart.toISOString().split('T')[0];
+
+            if (isCurrentWeek) {
                 option.selected = true;
             }
+
             dropdown.appendChild(option);
+
+            // Move to next week
+            currentWeek.setDate(currentWeek.getDate() + 7);
+            offsetValue++;
+        }
+
+        // If current week is not in range, default to first week
+        if (!foundCurrentWeek) {
+            this.currentWeekOffset = 0;
+            dropdown.options[0].selected = true;
         }
     }
 
@@ -59,15 +99,30 @@ class WeeklyPlanner {
     }
 
     getWeekDates() {
-        const today = new Date();
-        const currentDay = today.getDay();
-        const diff = today.getDate() - currentDay + (this.currentWeekOffset * 7);
-        const sunday = new Date(today.setDate(diff));
+        const dropdown = document.getElementById('weekDropdown');
+        const selectedOption = dropdown.options[this.currentWeekOffset];
+
+        if (selectedOption && selectedOption.dataset.sunday) {
+            const sunday = new Date(selectedOption.dataset.sunday);
+            const weekDates = [];
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(sunday);
+                date.setDate(sunday.getDate() + i);
+                weekDates.push(date);
+            }
+            return weekDates;
+        }
+
+        // Fallback to first week if something goes wrong
+        const firstSunday = new Date(this.minDate);
+        while (firstSunday.getDay() !== 0) {
+            firstSunday.setDate(firstSunday.getDate() + 1);
+        }
 
         const weekDates = [];
         for (let i = 0; i < 7; i++) {
-            const date = new Date(sunday);
-            date.setDate(sunday.getDate() + i);
+            const date = new Date(firstSunday);
+            date.setDate(firstSunday.getDate() + i);
             weekDates.push(date);
         }
         return weekDates;
@@ -88,7 +143,7 @@ class WeeklyPlanner {
         const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
         // Update dropdown selection
-        document.getElementById('weekDropdown').value = this.currentWeekOffset;
+        document.getElementById('weekDropdown').selectedIndex = this.currentWeekOffset;
 
         // Render day columns
         const daysContainer = document.getElementById('daysContainer');
@@ -246,7 +301,7 @@ class WeeklyPlanner {
 
         // Week dropdown
         document.getElementById('weekDropdown').addEventListener('change', (e) => {
-            this.currentWeekOffset = parseInt(e.target.value);
+            this.currentWeekOffset = parseInt(e.target.selectedIndex);
             this.renderWeek();
         });
 
@@ -390,7 +445,40 @@ class WeeklyPlanner {
     }
 }
 
-// Initialize the planner when DOM is ready
+// Password Protection
+function initPasswordProtection() {
+    const passwordScreen = document.getElementById('passwordScreen');
+    const passwordForm = document.getElementById('passwordForm');
+    const passwordInput = document.getElementById('passwordInput');
+    const passwordError = document.getElementById('passwordError');
+    const mainContainer = document.getElementById('mainContainer');
+
+    passwordForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const enteredPassword = passwordInput.value;
+
+        if (enteredPassword === 'joseph') {
+            // Correct password - show main app
+            passwordScreen.style.display = 'none';
+            mainContainer.style.display = 'block';
+            // Initialize the planner after successful login
+            new WeeklyPlanner();
+        } else {
+            // Wrong password
+            passwordError.textContent = 'Incorrect password. Please try again.';
+            passwordInput.value = '';
+            passwordInput.focus();
+
+            // Shake animation
+            passwordForm.style.animation = 'none';
+            setTimeout(() => {
+                passwordForm.style.animation = 'shake 0.5s';
+            }, 10);
+        }
+    });
+}
+
+// Initialize password protection when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-    new WeeklyPlanner();
+    initPasswordProtection();
 });
