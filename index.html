@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Futuristic Weekly Planner</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="title">Weekly Planner</h1>
+            <div class="week-navigation">
+                <button class="nav-btn" id="prevWeek">← Previous</button>
+                <span class="current-week" id="currentWeek"></span>
+                <button class="nav-btn" id="nextWeek">Next →</button>
+            </div>
+        </header>
+
+        <div class="quick-add-section">
+            <button class="quick-add-btn" id="quickAddBtn">+ Add Event</button>
+        </div>
+
+        <div class="planner-grid">
+            <div class="time-column">
+                <div class="time-header">Time</div>
+                <div class="time-slots" id="timeSlots"></div>
+            </div>
+            <div class="days-container" id="daysContainer"></div>
+        </div>
+    </div>
+
+    <!-- Modal for adding/editing events -->
+    <div class="modal" id="eventModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Add Event</h2>
+                <button class="close-btn" id="closeModal">&times;</button>
+            </div>
+            <form id="eventForm">
+                <div class="form-group">
+                    <label for="eventTitle">Event Title</label>
+                    <input type="text" id="eventTitle" required placeholder="Enter event name...">
+                </div>
+                <div class="form-group">
+                    <label for="eventDay">Day</label>
+                    <select id="eventDay" required>
+                        <option value="0">Sunday</option>
+                        <option value="1">Monday</option>
+                        <option value="2">Tuesday</option>
+                        <option value="3">Wednesday</option>
+                        <option value="4">Thursday</option>
+                        <option value="5">Friday</option>
+                        <option value="6">Saturday</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="eventStartTime">Start Time</label>
+                        <input type="time" id="eventStartTime" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="eventEndTime">End Time</label>
+                        <input type="time" id="eventEndTime" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="eventDescription">Description (optional)</label>
+                    <textarea id="eventDescription" rows="3" placeholder="Add details..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="delete-btn" id="deleteEvent" style="display: none;">Delete</button>
+                    <div class="right-actions">
+                        <button type="button" class="cancel-btn" id="cancelBtn">Cancel</button>
+                        <button type="submit" class="save-btn">Save</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
