@@ -10,6 +10,7 @@ class WeeklyPlanner {
 
     init() {
         this.renderTimeSlots();
+        this.populateWeekDropdown();
         this.renderWeek();
         this.attachEventListeners();
     }
@@ -22,6 +23,32 @@ class WeeklyPlanner {
             hours.push(`${hour}:00 ${period}`);
         }
         return hours;
+    }
+
+    populateWeekDropdown() {
+        const dropdown = document.getElementById('weekDropdown');
+        dropdown.innerHTML = '';
+
+        // Generate options for 26 weeks (past 13 weeks, current week, future 12 weeks)
+        for (let i = -13; i <= 12; i++) {
+            const tempOffset = i;
+            const tempDate = new Date();
+            const currentDay = tempDate.getDay();
+            const diff = tempDate.getDate() - currentDay + (tempOffset * 7);
+            const sunday = new Date(tempDate.setDate(diff));
+            const saturday = new Date(sunday);
+            saturday.setDate(sunday.getDate() + 6);
+
+            const weekDisplay = `${sunday.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${saturday.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
+
+            const option = document.createElement('option');
+            option.value = i;
+            option.textContent = weekDisplay;
+            if (i === this.currentWeekOffset) {
+                option.selected = true;
+            }
+            dropdown.appendChild(option);
+        }
     }
 
     renderTimeSlots() {
@@ -60,11 +87,8 @@ class WeeklyPlanner {
         const weekDates = this.getWeekDates();
         const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-        // Update week display
-        const firstDate = weekDates[0];
-        const lastDate = weekDates[6];
-        const weekDisplay = `${firstDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${lastDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
-        document.getElementById('currentWeek').textContent = weekDisplay;
+        // Update dropdown selection
+        document.getElementById('weekDropdown').value = this.currentWeekOffset;
 
         // Render day columns
         const daysContainer = document.getElementById('daysContainer');
@@ -91,29 +115,73 @@ class WeeklyPlanner {
 
     renderDaySlots(dateKey, dayEvents) {
         let slots = '';
+        const allIntervals = [];
+
+        // Create array to track which intervals have events
         for (let hour = 0; hour < 24; hour++) {
-            const eventsInThisSlot = dayEvents.filter(e => {
-                const eventStartHour = parseInt(e.startTime.split(':')[0]);
-                return eventStartHour === hour;
+            for (let minute = 0; minute < 60; minute += 15) {
+                allIntervals.push({ hour, minute, hasEvent: false });
+            }
+        }
+
+        // Mark intervals that have events and position events
+        const renderedEvents = [];
+        dayEvents.forEach(event => {
+            const [startHour, startMin] = event.startTime.split(':').map(Number);
+            const [endHour, endMin] = event.endTime.split(':').map(Number);
+            const startTotalMin = startHour * 60 + startMin;
+            const endTotalMin = endHour * 60 + endMin;
+            const duration = (endTotalMin - startTotalMin) / 60;
+            const height = duration * 60; // 15px per 15-minute interval = 60px per hour
+            const topOffset = (startMin / 60) * 60; // Offset within the hour block
+
+            renderedEvents.push({
+                event,
+                startHour,
+                startMin,
+                height,
+                topOffset
             });
 
-            if (eventsInThisSlot.length > 0) {
-                eventsInThisSlot.forEach(event => {
-                    const duration = this.calculateDuration(event.startTime, event.endTime);
-                    const height = duration * 60; // 60px per hour
-                    slots += `
-                        <div class="time-block event"
-                             data-event-id="${event.id}"
-                             style="height: ${height}px; min-height: ${height}px;">
-                            <div class="event-title">${event.title}</div>
-                            <div class="event-time">${this.formatTime12Hour(event.startTime)} - ${this.formatTime12Hour(event.endTime)}</div>
-                            ${event.description ? `<div class="event-description">${event.description}</div>` : ''}
-                        </div>
-                    `;
-                });
-            } else {
-                slots += `<div class="time-block" data-hour="${hour}" data-date="${dateKey}"></div>`;
+            // Mark intervals as having events
+            for (let i = 0; i < allIntervals.length; i++) {
+                const interval = allIntervals[i];
+                const intervalMin = interval.hour * 60 + interval.minute;
+                if (intervalMin >= startTotalMin && intervalMin < endTotalMin) {
+                    interval.hasEvent = true;
+                }
             }
+        });
+
+        // Render intervals with 15-minute lines
+        let currentHour = -1;
+        for (let hour = 0; hour < 24; hour++) {
+            // Container for this hour with all 4 15-minute intervals
+            slots += `<div class="hour-container" data-hour="${hour}" data-date="${dateKey}">`;
+
+            // Check if any event starts in this hour
+            const eventsInHour = renderedEvents.filter(e => e.startHour === hour);
+
+            // Render events that start in this hour
+            eventsInHour.forEach(({ event, height, topOffset }) => {
+                slots += `
+                    <div class="time-block event"
+                         data-event-id="${event.id}"
+                         style="height: ${height}px; min-height: ${height}px; top: ${topOffset}px;">
+                        <div class="event-title">${event.title}</div>
+                        <div class="event-time">${this.formatTime12Hour(event.startTime)} - ${this.formatTime12Hour(event.endTime)}</div>
+                        ${event.description ? `<div class="event-description">${event.description}</div>` : ''}
+                    </div>
+                `;
+            });
+
+            // Render the 4 15-minute interval lines
+            for (let minute = 0; minute < 60; minute += 15) {
+                const intervalClass = minute === 0 ? 'interval-line hour-line' : 'interval-line';
+                slots += `<div class="${intervalClass}" data-hour="${hour}" data-minute="${minute}" data-date="${dateKey}"></div>`;
+            }
+
+            slots += `</div>`;
         }
         return slots;
     }
@@ -143,12 +211,14 @@ class WeeklyPlanner {
             });
         });
 
-        // Click on time block to add event
-        document.querySelectorAll('.time-block:not(.event)').forEach(block => {
-            block.addEventListener('click', (e) => {
-                const hour = parseInt(block.dataset.hour);
-                const date = block.dataset.date;
-                const weekDates = this.getWeekDates();
+        // Click on hour container or interval line to add event
+        document.querySelectorAll('.hour-container').forEach(container => {
+            container.addEventListener('click', (e) => {
+                // Don't open modal if clicking on an event
+                if (e.target.closest('.event')) return;
+
+                const hour = parseInt(container.dataset.hour);
+                const date = container.dataset.date;
                 const targetDate = new Date(date);
                 const day = targetDate.getDay();
                 this.openModal(null, day, date, hour);
@@ -174,14 +244,9 @@ class WeeklyPlanner {
             this.openModal();
         });
 
-        // Week navigation
-        document.getElementById('prevWeek').addEventListener('click', () => {
-            this.currentWeekOffset--;
-            this.renderWeek();
-        });
-
-        document.getElementById('nextWeek').addEventListener('click', () => {
-            this.currentWeekOffset++;
+        // Week dropdown
+        document.getElementById('weekDropdown').addEventListener('change', (e) => {
+            this.currentWeekOffset = parseInt(e.target.value);
             this.renderWeek();
         });
 

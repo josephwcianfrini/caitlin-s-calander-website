@@ -13,6 +13,9 @@
     --bg-dark: #0d0221;
     --glass-bg: rgba(123, 44, 191, 0.1);
     --glass-border: rgba(255, 110, 199, 0.2);
+    --white: #ffffff;
+    --light-gray: #f5f5f5;
+    --border-gray: #e0e0e0;
 }
 
 @keyframes gradient-shift {
@@ -49,10 +52,10 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, var(--bg-dark) 0%, var(--dark-purple) 50%, var(--bg-dark) 100%);
+    background: linear-gradient(135deg, #f0e6f6 0%, var(--light-pink) 25%, var(--dark-purple) 50%, var(--bg-dark) 75%, var(--dark-purple) 100%);
     background-size: 200% 200%;
     animation: gradient-shift 15s ease infinite;
-    color: #fff;
+    color: #333;
     min-height: 100vh;
     overflow-x: hidden;
 }
@@ -95,58 +98,42 @@ body::before {
     background-clip: text;
     animation: shimmer 3s linear infinite;
     margin-bottom: 1rem;
-    text-transform: uppercase;
-    letter-spacing: 3px;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.3);
 }
 
 .week-navigation {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 2rem;
     margin-top: 1.5rem;
 }
 
-.nav-btn {
-    background: linear-gradient(135deg, var(--primary-pink), var(--primary-purple));
-    border: none;
-    color: white;
-    padding: 0.75rem 1.5rem;
+.week-dropdown {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.85));
+    border: 2px solid var(--primary-purple);
+    color: var(--dark-purple);
+    padding: 0.75rem 2rem;
     border-radius: 50px;
     cursor: pointer;
     font-size: 1rem;
     font-weight: 600;
     transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-.nav-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-    transition: left 0.5s;
-}
-
-.nav-btn:hover::before {
-    left: 100%;
-}
-
-.nav-btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 5px 25px rgba(255, 110, 199, 0.5);
-}
-
-.current-week {
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: var(--light-pink);
-    min-width: 300px;
+    min-width: 350px;
     text-align: center;
+    box-shadow: 0 4px 15px rgba(123, 44, 191, 0.3);
+}
+
+.week-dropdown:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 25px rgba(255, 110, 199, 0.5);
+    border-color: var(--primary-pink);
+}
+
+.week-dropdown:focus {
+    outline: none;
+    border-color: var(--primary-pink);
+    box-shadow: 0 0 20px rgba(255, 110, 199, 0.4);
 }
 
 .quick-add-section {
@@ -178,12 +165,13 @@ body::before {
     display: grid;
     grid-template-columns: 100px 1fr;
     gap: 1rem;
-    background: var(--glass-bg);
+    background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
-    border: 1px solid var(--glass-border);
+    border: 2px solid var(--primary-purple);
     border-radius: 20px;
     padding: 1.5rem;
     animation: slideIn 0.8s ease-out;
+    box-shadow: 0 10px 40px rgba(123, 44, 191, 0.2);
 }
 
 .time-column {
@@ -213,13 +201,13 @@ body::before {
 .time-slot {
     height: 60px;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
-    font-size: 0.9rem;
-    color: var(--light-pink);
-    background: rgba(255, 110, 199, 0.05);
-    border-radius: 8px;
-    border: 1px solid rgba(255, 110, 199, 0.1);
+    font-size: 0.85rem;
+    color: var(--dark-purple);
+    background: transparent;
+    padding-top: 4px;
+    font-weight: 500;
 }
 
 .days-container {
@@ -255,6 +243,8 @@ body::before {
     margin-bottom: 0.5rem;
     cursor: pointer;
     transition: all 0.3s ease;
+    color: white;
+    box-shadow: 0 2px 10px rgba(123, 44, 191, 0.3);
 }
 
 .day-header:hover {
@@ -268,7 +258,7 @@ body::before {
 
 .day-date {
     font-size: 0.85rem;
-    opacity: 0.9;
+    opacity: 0.95;
 }
 
 .day-slots {
@@ -277,18 +267,50 @@ body::before {
     gap: 0.5rem;
 }
 
-.time-block {
+.hour-container {
     height: 60px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.hour-container:hover {
+    background: rgba(255, 110, 199, 0.05);
+}
+
+.interval-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--border-gray);
+    pointer-events: none;
+}
+
+.interval-line:nth-child(2) { top: 0; }      /* 0 minutes - hour line */
+.interval-line:nth-child(3) { top: 15px; }   /* 15 minutes */
+.interval-line:nth-child(4) { top: 30px; }   /* 30 minutes */
+.interval-line:nth-child(5) { top: 45px; }   /* 45 minutes */
+
+.interval-line.hour-line {
+    background: rgba(123, 44, 191, 0.3);
+    height: 2px;
+}
+
+.time-block {
+    position: absolute;
+    left: 0;
+    right: 0;
     background: rgba(123, 44, 191, 0.1);
     border: 1px solid rgba(255, 110, 199, 0.15);
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
-    position: relative;
     overflow: hidden;
+    pointer-events: auto;
 }
 
-.time-block:hover {
+.time-block:not(.event):hover {
     background: rgba(255, 110, 199, 0.15);
     border-color: var(--primary-pink);
     transform: scale(1.02);
@@ -360,15 +382,15 @@ body::before {
 }
 
 .modal-content {
-    background: linear-gradient(135deg, rgba(36, 0, 70, 0.95), rgba(13, 2, 33, 0.95));
-    border: 2px solid var(--glass-border);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(245, 235, 255, 0.98));
+    border: 3px solid var(--primary-purple);
     border-radius: 20px;
     padding: 2rem;
     width: 90%;
     max-width: 500px;
     animation: slideIn 0.3s ease-out;
     backdrop-filter: blur(10px);
-    box-shadow: 0 20px 60px rgba(255, 110, 199, 0.3);
+    box-shadow: 0 20px 60px rgba(123, 44, 191, 0.4);
 }
 
 .modal-header {
@@ -386,7 +408,7 @@ body::before {
 .close-btn {
     background: none;
     border: none;
-    color: var(--light-pink);
+    color: var(--primary-purple);
     font-size: 2rem;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -399,7 +421,7 @@ body::before {
 }
 
 .close-btn:hover {
-    background: rgba(255, 110, 199, 0.2);
+    background: rgba(123, 44, 191, 0.2);
     transform: rotate(90deg);
 }
 
@@ -416,7 +438,7 @@ body::before {
 .form-group label {
     display: block;
     margin-bottom: 0.5rem;
-    color: var(--light-pink);
+    color: var(--dark-purple);
     font-weight: 600;
 }
 
@@ -425,10 +447,10 @@ body::before {
 .form-group textarea {
     width: 100%;
     padding: 0.75rem;
-    background: rgba(123, 44, 191, 0.2);
-    border: 2px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid var(--primary-purple);
     border-radius: 10px;
-    color: white;
+    color: var(--dark-purple);
     font-size: 1rem;
     transition: all 0.3s ease;
 }
@@ -481,13 +503,14 @@ body::before {
 }
 
 .cancel-btn {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-    border: 2px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.5);
+    color: var(--dark-purple);
+    border: 2px solid var(--primary-purple);
 }
 
 .cancel-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 2px 10px rgba(123, 44, 191, 0.3);
 }
 
 .delete-btn {
